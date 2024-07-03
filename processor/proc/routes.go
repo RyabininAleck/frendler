@@ -9,6 +9,7 @@ import (
 func RegisterHandlers(api *echo.Group) {
 
 	api.GET("/hello", handler.HelloHandler)
+	api.GET("/hellohello", handler.HelloHandler)
 
 	get := api.Group("/:id")
 	get.GET("/profile", handler.GetProfile)
