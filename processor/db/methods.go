@@ -1,7 +1,9 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
+	"time"
 
 	"frendler/processor/models"
 )
@@ -10,15 +12,25 @@ func (d *DBsql) CheckToken(hash string) (bool, error) {
 	return true, nil
 }
 
-func (d *DBsql) CreateUser(user models.User) error {
+func (d *DBsql) CreateUserSetting(user models.User, set models.Setting) error {
 	query := `
-		INSERT INTO users (username, email, password, created_at, updated_at, first_name, last_name, role, status, avatar_url, phone_number, gender, birthdate)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		INSERT INTO users (username, email, password, first_name, last_name, role, status, avatar_url, phone_number, gender, birthdate)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
-	_, err := d.DB.Exec(query, user.Username, user.Email, user.Password, user.CreatedAt, user.UpdatedAt, user.FirstName, user.LastName, user.Role, user.Status, user.AvatarURL, user.PhoneNumber, user.Gender, user.Birthdate)
+	_, err := d.DB.Exec(query, user.Username, user.Email, user.Password, user.FirstName, user.LastName, user.Role, user.Status, user.AvatarURL, user.PhoneNumber, user.Gender, user.Birthdate)
 	if err != nil {
 		return fmt.Errorf("error creating user: %v", err)
 	}
+
+	querySetting := `
+		INSERT INTO settings (user_id, theme, language, auto_update, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?)
+	`
+	_, err = d.DB.Exec(querySetting, set.UserID, set.Theme, set.Language, set.AutoUpdate, time.Now(), time.Now())
+	if err != nil {
+		return fmt.Errorf("error creating user: %v", err)
+	}
+
 	return nil
 }
 
@@ -128,4 +140,59 @@ func (d *DBsql) AddTags(tags []models.FriendTag) error {
 	}
 
 	return nil
+}
+
+func (d *DBsql) GetSetting(userID int) (models.Setting, error) {
+	var setting models.Setting
+
+	query := `
+		SELECT id, theme, language,auto_update,created_at,updated_at
+		FROM settings
+		WHERE user_id = ?
+	`
+
+	err := d.DB.QueryRow(query, userID).Scan(&setting.ID, &setting.Theme, &setting.Language, &setting.AutoUpdate, &setting.CreatedAt, &setting.UpdatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return setting, fmt.Errorf("setting with id %d not found", userID)
+		}
+		return setting, fmt.Errorf("error fetching setting: %v", err)
+	}
+
+	return setting, nil
+}
+
+func (d *DBsql) GetUser(userID int) (models.User, error) {
+	var user models.User
+	query := `
+		SELECT id, username, email, password, created_at, updated_at, first_name, last_name, role, status, avatar_url, phone_number, gender, birthdate
+		FROM users
+		WHERE id = ?
+	`
+
+	err := d.DB.QueryRow(query, userID).Scan(
+		&user.ID,
+		&user.Username,
+		&user.Email,
+		&user.Password,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+		&user.FirstName,
+		&user.LastName,
+		&user.Role,
+		&user.Status,
+		&user.AvatarURL,
+		&user.PhoneNumber,
+		&user.Gender,
+		&user.Birthdate,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return user, fmt.Errorf("profile for user with id %d not found", userID)
+		}
+		return user, fmt.Errorf("error fetching profile: %v", err)
+	}
+
+	return user, nil
+
 }

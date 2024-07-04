@@ -6,10 +6,10 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func AddVKProfile(c echo.Context) error {
+func (h *HandlerImpl) AddVKProfile(c echo.Context) error {
 	return c.String(http.StatusOK, "AddVKProfile")
 }
 
-func AddTelegramProfile(c echo.Context) error {
+func (h *HandlerImpl) AddTelegramProfile(c echo.Context) error {
 	return c.String(http.StatusOK, "AddTelegramProfile!")
 }

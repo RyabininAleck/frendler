@@ -6,21 +6,28 @@ import (
 	"frendler/processor/proc/handler"
 )
 
-func RegisterHandlers(api *echo.Group) {
+func (p *Processor) RegisterHandlers(api *echo.Group) {
 
 	api.GET("/hello", handler.HelloHandler)
 
+	//todo проверить
 	get := api.Group("/:id")
-	get.GET("/profile", handler.GetProfile)
-	get.GET("/settings", handler.GetSettings)
+	get.GET("/profile", p.Handler.GetProfile)   // +
+	get.GET("/settings", p.Handler.GetSettings) // +
 
 	createUserApi := api.Group("/createUser")
-	createUserApi.POST("/byEmail", handler.CreateUserByEmail)
-	createUserApi.POST("/byNumber", handler.CreateUserByNumber)
-	createUserApi.POST("/byVK", handler.CreateUserByVk)
+	createUserApi.POST("/byNumber", p.Handler.CreateUserByNumber) // +
+	createUserApi.POST("/byEmail", p.Handler.CreateUserByEmail)
+	createUserApi.POST("/byVK", p.Handler.CreateUserByVk)
 
 	addProfile := api.Group("/addProfile")
-	addProfile.POST("/vk", handler.AddVKProfile)
-	addProfile.POST("/telegram", handler.AddTelegramProfile)
+	addProfile.POST("/vk", p.Handler.AddVKProfile)
+	//	addProfile.POST("/telegram", p.Handler.AddTelegramProfile)
+
+	//addProfileCallback := addProfile.Group("/callback")
+	//addProfileCallback.POST("/vk", p.Handler.AddVKProfileCallback)
+	//addProfileCallback.POST("/telegram", p.Handler.AddTelegramProfileCallback)
+
+	// todo объединение контакта, группы.
 
 }

@@ -17,7 +17,7 @@ func (p *Processor) Run() error {
 
 	api := e.Group("/api")
 	apiV1 := api.Group("/v1")
-	RegisterHandlers(apiV1)
+	p.RegisterHandlers(apiV1)
 
 	// Запуск сервера
 	return e.Start(":8080")
