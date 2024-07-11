@@ -10,8 +10,8 @@ import (
 	"frendler/processor/models"
 )
 
-func (h *HandlerImpl) CreateUserByEmail(c echo.Context) error {
-	return c.String(http.StatusOK, "CreateUserByEmail")
+func (h *HandlerImpl) CreateUserByGoogle(c echo.Context) error {
+	return c.String(http.StatusOK, "CreateUserByGoogle")
 }
 
 /*

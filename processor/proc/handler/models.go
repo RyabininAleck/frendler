@@ -11,7 +11,7 @@ type HandlerImpl struct {
 }
 
 type Handler interface {
-	CreateUserByEmail(c echo.Context) error
+	CreateUserByGoogle(c echo.Context) error
 	CreateUserByNumber(c echo.Context) error
 	CreateUserByVk(c echo.Context) error
 
