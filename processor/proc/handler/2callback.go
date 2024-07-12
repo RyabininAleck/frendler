@@ -48,12 +48,12 @@ func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 	}
 
 	client := config.GoogleOauth.Client(c.Request().Context(), token)
-	userInfo, err := getUserInfo(client)
+	userGoogleInfo, err := getUserInfo(client)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to get user info: %s", err.Error()))
 	}
 
-	user, err := h.DB.GetUserByExternalId(userInfo.ID, constants.PlatformGoogle)
+	user, err := h.DB.GetSocialProfileByExternalId(userGoogleInfo.ID, constants.PlatformGoogle)
 	if err != nil {
 		log.Printf("Database error: %v\n", err)
 		return c.Redirect(http.StatusTemporaryRedirect, "/error")
@@ -69,12 +69,12 @@ func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 	} else {
 		userId, _, err = h.DB.CreateUserAndSetting(
 			&models.User{
-				Username:    userInfo.Email,
-				Email:       userInfo.Email,
+				Username:    userGoogleInfo.Email,
+				Email:       userGoogleInfo.Email,
 				Password:    "",
 				Role:        constants.RoleUser,
 				Status:      constants.StatusActive,
-				AvatarURL:   userInfo.Picture,
+				AvatarURL:   userGoogleInfo.Picture,
 				PhoneNumber: "",
 			},
 			&models.Setting{
@@ -92,8 +92,8 @@ func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 		_, err = h.DB.CreateSocialProfile(&models.SocialProfile{
 			UserID:     userId,
 			Platform:   constants.PlatformGoogle,
-			ExternalID: userInfo.ID,
-			ProfileURL: userInfo.Email,
+			ExternalID: userGoogleInfo.ID,
+			ProfileURL: userGoogleInfo.Email,
 			Params:     string(jsonData),
 		})
 		if err != nil {

@@ -16,6 +16,14 @@ func (p *Processor) RegisterHandlers(api *echo.Group) {
 	CallbackApi := api.Group("/callback")
 	CallbackApi.GET("/google", p.Handler.HandleGoogleCallback)
 
+	userApi := api.Group("/user")
+	userApi.Use(p.Handler.TokenMiddleware)
+
+	userApi.GET("/settings", p.Handler.GetSettings)
+	userApi.GET("/contactStats", p.Handler.GetContactStats)
+
+	userUpdate := api.Group("/update")
+	userUpdate.GET("/google", p.Handler.GoogleContactUpdate)
 	////todo проверить
 	//get := api.Group("/:id")
 	//get.GET("/profile", p.Handler.GetProfile)   // +

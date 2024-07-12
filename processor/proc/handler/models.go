@@ -14,6 +14,8 @@ type Handler interface {
 	LoginByGoogle(c echo.Context) error
 	HandleGoogleCallback(c echo.Context) error
 
+	GetContactStats(c echo.Context) error
+
 	//
 	//CreateUserByNumber(c echo.Context) error
 	//CreateUserByVk(c echo.Context) error
@@ -24,4 +26,6 @@ type Handler interface {
 	//AddVKProfile(c echo.Context) error
 	//AddTelegramProfile(c echo.Context) error
 	TokenMiddleware(next echo.HandlerFunc) echo.HandlerFunc
+
+	GoogleContactUpdate(c echo.Context) error
 }

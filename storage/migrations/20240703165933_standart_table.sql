@@ -17,7 +17,8 @@ CREATE TABLE users (
                        birthdate DATE,
                        UNIQUE (username, email)
 );
-
+-- // todo  возможно надо определить platform в отдельной таблице чтобы не происходило дублирование platform VARCHAR(50) CHECK(platform IN ('google', 'vk', 'telegram', 'contact')) NOT NULL, --вот это
+--
 CREATE TABLE social_profiles (
                                  id INTEGER PRIMARY KEY AUTOINCREMENT,
                                  user_id INTEGER NOT NULL,
@@ -48,6 +49,7 @@ CREATE TABLE friends (
                          name VARCHAR(50) NOT NULL,
                          alternate_names TEXT,
                          birthdate DATE,
+                         platform VARCHAR(50) CHECK(platform IN ('vk', 'telegram', 'contact', 'google')) NOT NULL,
                          phone_number VARCHAR(20),
                          alternate_phone_numbers TEXT,
                          avatar_url VARCHAR(255),
@@ -69,7 +71,7 @@ CREATE TABLE friend_tags (
                              id INTEGER PRIMARY KEY AUTOINCREMENT,
                              friend_id INTEGER NOT NULL,
                              tag VARCHAR(30) NOT NULL,
-                             platform VARCHAR(50) CHECK(platform IN ('vk', 'telegram', 'contact')) NOT NULL,
+                             platform VARCHAR(50) CHECK(platform IN ('vk', 'telegram', 'contact', 'google')) NOT NULL,
                              FOREIGN KEY (friend_id) REFERENCES friends(id)
 );
 CREATE TABLE tokens (
