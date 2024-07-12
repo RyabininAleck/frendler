@@ -11,13 +11,17 @@ type HandlerImpl struct {
 }
 
 type Handler interface {
-	CreateUserByGoogle(c echo.Context) error
-	CreateUserByNumber(c echo.Context) error
-	CreateUserByVk(c echo.Context) error
+	LoginByGoogle(c echo.Context) error
+	HandleGoogleCallback(c echo.Context) error
 
-	GetProfile(c echo.Context) error
+	//
+	//CreateUserByNumber(c echo.Context) error
+	//CreateUserByVk(c echo.Context) error
+	//
+	//GetProfile(c echo.Context) error
 	GetSettings(c echo.Context) error
-
-	AddVKProfile(c echo.Context) error
-	AddTelegramProfile(c echo.Context) error
+	//
+	//AddVKProfile(c echo.Context) error
+	//AddTelegramProfile(c echo.Context) error
+	TokenMiddleware(next echo.HandlerFunc) echo.HandlerFunc
 }

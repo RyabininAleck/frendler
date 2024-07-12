@@ -22,6 +22,7 @@ type Platform string
 
 const (
 	PlatformVK       Platform = "vk"
+	PlatformGoogle   Platform = "google"
 	PlatformTelegram Platform = "telegram"
 	PlatformContact  Platform = "contact"
 )

@@ -21,10 +21,13 @@ CREATE TABLE users (
 CREATE TABLE social_profiles (
                                  id INTEGER PRIMARY KEY AUTOINCREMENT,
                                  user_id INTEGER NOT NULL,
-                                 platform VARCHAR(50) CHECK(platform IN ('vk', 'telegram', 'contact')) NOT NULL, --вот это
+                                 platform VARCHAR(50) CHECK(platform IN ('google', 'vk', 'telegram', 'contact')) NOT NULL, --вот это
                                  profile_url VARCHAR(255) NOT NULL,
+                                 external_id VARCHAR(50) NOT NULL,
+                                 params TEXT,
                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                                  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                 last_contact_updated_at TIMESTAMP,
                                  FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -69,6 +72,27 @@ CREATE TABLE friend_tags (
                              platform VARCHAR(50) CHECK(platform IN ('vk', 'telegram', 'contact')) NOT NULL,
                              FOREIGN KEY (friend_id) REFERENCES friends(id)
 );
+CREATE TABLE tokens (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        user_id INTEGER,
+                        token VARCHAR(50) NOT NULL,
+                        created_at DATETIME NOT NULL,
+                        is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                        FOREIGN KEY (user_id) REFERENCES users(id),
+                        UNIQUE (user_id, token)
+);
+
+CREATE TABLE conflicts (
+                           id INTEGER PRIMARY KEY AUTOINCREMENT,
+                           user_id INTEGER NOT NULL,
+                           left_friend_id INTEGER NOT NULL,
+                           right_friend_id INTEGER NOT NULL,
+                           is_active BOOLEAN NOT NULL DEFAULT TRUE,
+                           FOREIGN KEY (user_id) REFERENCES users(id),
+                           FOREIGN KEY (left_friend_id) REFERENCES friends(id),
+                           FOREIGN KEY (right_friend_id) REFERENCES friends(id)
+);
+
 
 
 -- +goose StatementEnd

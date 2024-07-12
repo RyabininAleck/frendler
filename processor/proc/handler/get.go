@@ -15,7 +15,7 @@ func (h *HandlerImpl) GetProfile(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
 	}
 
-	user, err := h.DB.GetUser(id)
+	user, err := h.DB.GetUserById(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
 	}

@@ -6,7 +6,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// HelloHandler обработчик GET запроса "/"
 func HelloHandler(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+	cookies := c.Cookies()
+	response := make(map[string]string)
+	for _, cookie := range cookies {
+		response[cookie.Name] = cookie.Value
+	}
+	return c.JSON(http.StatusOK, response)
 }

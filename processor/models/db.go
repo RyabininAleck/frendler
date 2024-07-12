@@ -27,9 +27,11 @@ type SocialProfile struct {
 	ID         int64              `json:"id"`
 	UserID     int64              `json:"user_id"`
 	Platform   constants.Platform `json:"platform"`
+	ExternalID string             `json:"external_id"`
 	ProfileURL string             `json:"profile_url"`
 	CreatedAt  time.Time          `json:"created_at"`
 	UpdatedAt  time.Time          `json:"updated_at"`
+	Params     string             `json:"params"`
 }
 
 type Setting struct {

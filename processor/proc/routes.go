@@ -10,14 +10,20 @@ func (p *Processor) RegisterHandlers(api *echo.Group) {
 
 	api.GET("/hello", handler.HelloHandler)
 
+	createUserApi := api.Group("/login")
+	createUserApi.POST("/byGoogle", p.Handler.LoginByGoogle)
+
+	CallbackApi := api.Group("/callback")
+	CallbackApi.GET("/google", p.Handler.HandleGoogleCallback)
+
 	////todo проверить
 	//get := api.Group("/:id")
 	//get.GET("/profile", p.Handler.GetProfile)   // +
 	//get.GET("/settings", p.Handler.GetSettings) // +
 
-	createUserApi := api.Group("/login")
+	//createUserApi := api.Group("/login")
 	//createUserApi.POST("/byNumber", p.Handler.CreateUserByNumber) // +
-	createUserApi.POST("/byGoogle", p.Handler.CreateUserByGoogle)
+	//createUserApi.POST("/byGoogle", p.Handler.LoginByGoogle)
 	//createUserApi.POST("/byVK", p.Handler.CreateUserByVk)
 
 	//add := api.Group("/:id")

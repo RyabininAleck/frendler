@@ -41,8 +41,8 @@ func (h *HandlerImpl) CreateUserByNumber(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "User already exists")
 	}
 
-	err = h.DB.CreateUserSetting(
-		models.User{
+	_, _, err = h.DB.CreateUserAndSetting(
+		&models.User{
 			Username:    user.Username,
 			Email:       user.Email,
 			Password:    user.Password,
@@ -50,7 +50,7 @@ func (h *HandlerImpl) CreateUserByNumber(c echo.Context) error {
 			Status:      user.Status,
 			PhoneNumber: user.PhoneNumber,
 		},
-		models.Setting{
+		&models.Setting{
 			Theme:      constants.ThemeLight,
 			Language:   "ru",
 			AutoUpdate: false,
@@ -58,13 +58,11 @@ func (h *HandlerImpl) CreateUserByNumber(c echo.Context) error {
 			UpdatedAt:  time.Now(),
 		},
 	)
-
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 
 	}
 
-	//todo добавить настройки
 	return c.String(http.StatusOK, "CreateUserByNumber")
 }
 
