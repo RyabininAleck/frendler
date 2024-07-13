@@ -32,6 +32,7 @@ type SocialProfile struct {
 	CreatedAt  time.Time          `json:"created_at"`
 	UpdatedAt  time.Time          `json:"updated_at"`
 	Params     string             `json:"params"`
+	Token      string             `json:"token"`
 }
 
 type Setting struct {
@@ -43,17 +44,53 @@ type Setting struct {
 	CreatedAt  time.Time       `json:"created_at"`
 	UpdatedAt  time.Time       `json:"updated_at"`
 }
+
 type Friend struct {
-	ID                    int64      `json:"id"`
-	OwnerID               int64      `json:"owner_id"`
-	Name                  string     `json:"name"`
-	AlternateNames        []string   `json:"alternate_names,omitempty"`
-	Birthdate             *time.Time `json:"birthdate,omitempty"`
-	PhoneNumber           string     `json:"phone_number,omitempty"`
-	AlternatePhoneNumbers []string   `json:"alternate_phone_numbers,omitempty"`
-	AvatarURL             string     `json:"avatar_url,omitempty"`
+	ID            int64      `json:"id"`
+	OwnerID       int64      `json:"owner_id"`
+	GivenName     string     `json:"given_name"`
+	FamilyName    string     `json:"family_name"`
+	DisplayName   string     `json:"display_name"`
+	Birthdate     *time.Time `json:"birthdate,omitempty"`
+	Organizations string     `json:"organizations,omitempty"`
+	PhoneNumber   string     `json:"phone_number,omitempty"`
+	AvatarURL     string     `json:"avatar_url,omitempty"`
 }
-type FriendNote struct {
+
+type PhoneNumber struct {
+	ID          int    `json:"id"`
+	FriendID    int    `json:"friend_id"`
+	PhoneNumber string `json:"phone_number"`
+	IsPrimary   bool   `json:"is_primary"`
+	NumberType  string `json:"number_type"`
+}
+
+type Email struct {
+	ID        int    `json:"id"`
+	FriendID  int    `json:"friend_id"`
+	Email     string `json:"email"`
+	EmailType string `json:"email_type"`
+}
+
+type URL struct {
+	ID             int    `json:"id"`
+	FriendID       int    `json:"friend_id"`
+	URL            string `json:"url"`
+	URLDescription string `json:"url_description"`
+	URLType        string `json:"url_type"`
+}
+
+type Address struct {
+	ID          int    `json:"id"`
+	FriendID    int    `json:"friend_id"`
+	Address     string `json:"address"`
+	IsPrimary   bool   `json:"is_primary"`
+	AddressType string `json:"address_type"`
+	Country     string `json:"country,omitempty"`
+	CountryCode string `json:"country_code,omitempty"`
+}
+
+type Note struct {
 	NoteID    int64     `json:"note_id"`
 	FriendID  int64     `json:"friend_id"`
 	Title     string    `json:"title"`
@@ -63,7 +100,7 @@ type FriendNote struct {
 	Category  string    `json:"category,omitempty"`
 }
 
-type FriendTag struct {
+type Tag struct {
 	ID       int64              `json:"id"`
 	FriendID int64              `json:"friend_id"`
 	Tag      string             `json:"tag"`

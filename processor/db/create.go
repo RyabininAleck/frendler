@@ -42,10 +42,10 @@ func (d *DBsql) CreateUserAndSetting(user *models.User, set *models.Setting) (in
 
 func (d *DBsql) CreateSocialProfile(profile *models.SocialProfile) (int64, error) {
 	query := `
-		INSERT INTO social_profiles (user_id, external_id, platform, profile_url, created_at, updated_at, params)
-		VALUES (?, ?, ?, ?, ?, ?,? )
+		INSERT INTO social_profiles (user_id, external_id, platform, profile_url, created_at, updated_at, params, token)
+		VALUES (?, ?, ?, ?, ?, ?,?, ? )
 	`
-	res, err := d.DB.Exec(query, profile.UserID, profile.ExternalID, profile.Platform, profile.ProfileURL, profile.CreatedAt, profile.UpdatedAt, profile.Params)
+	res, err := d.DB.Exec(query, profile.UserID, profile.ExternalID, profile.Platform, profile.ProfileURL, profile.CreatedAt, profile.UpdatedAt, profile.Params, profile.Token)
 	if err != nil {
 		return 0, fmt.Errorf("error creating social profile: %v", err)
 	}
@@ -61,12 +61,12 @@ func (d *DBsql) CreateSocialProfile(profile *models.SocialProfile) (int64, error
 //todo добавить создание друга, создание друзей
 
 func (d *DBsql) CreateFriend(userId int, contact *models.Friend, platform constants.Platform) (int64, error) {
-
+	// todo доделать
 	query := `
-		INSERT INTO friends (ownerID, name, platform, alternate_names, birthdate, phone_number, alternate_phone_numbers, avatar_url)
-		VALUES (?, ?, ?, ?, ?, ?,?, ?)
+		INSERT INTO friends (ownerID, name, platform, birthdate, phone_number, avatar_url)
+		VALUES (?, ?, ?, ?, ?, ?)
 	`
-	res, err := d.DB.Exec(query, userId, contact.Name, platform, contact.AlternateNames, contact.Birthdate, contact.PhoneNumber, contact.AlternatePhoneNumbers, contact.AvatarURL)
+	res, err := d.DB.Exec(query, userId, contact.GivenName, platform, contact.Birthdate, contact.PhoneNumber, contact.AvatarURL)
 	if err != nil {
 		return 0, fmt.Errorf("error creating social profile: %v", err)
 	}

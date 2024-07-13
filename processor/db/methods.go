@@ -23,8 +23,8 @@ func (d *DBsql) AddFriends(friends []models.Friend) error {
 	}()
 
 	stmt, err := tx.Prepare(`
-		INSERT INTO friends (ownerID, name, alternate_names, birthdate, phone_number, alternate_phone_numbers, avatar_url)
-		VALUES (?, ?, ?, ?, ?, ?, ?)
+		INSERT INTO friends (ownerID, name, birthdate, phone_number, avatar_url)
+		VALUES (?, ?, ?, ?, ?)
 	`)
 	if err != nil {
 		return fmt.Errorf("error preparing statement: %v", err)
@@ -32,7 +32,7 @@ func (d *DBsql) AddFriends(friends []models.Friend) error {
 	defer stmt.Close()
 
 	for _, friend := range friends {
-		_, err = stmt.Exec(friend.OwnerID, friend.Name, friend.AlternateNames, friend.Birthdate, friend.PhoneNumber, friend.AlternatePhoneNumbers, friend.AvatarURL)
+		_, err = stmt.Exec(friend.OwnerID, friend.GivenName, friend.Birthdate, friend.PhoneNumber, friend.AvatarURL)
 		if err != nil {
 			return fmt.Errorf("error adding friend: %v", err)
 		}
@@ -41,7 +41,7 @@ func (d *DBsql) AddFriends(friends []models.Friend) error {
 	return nil
 }
 
-func (d *DBsql) AddTags(tags []models.FriendTag) error {
+func (d *DBsql) AddTags(tags []models.Tag) error {
 	tx, err := d.DB.Begin()
 	if err != nil {
 		return fmt.Errorf("error starting transaction: %v", err)

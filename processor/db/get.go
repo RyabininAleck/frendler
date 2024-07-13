@@ -96,7 +96,7 @@ func (d *DBsql) GetSocialProfileByExternalId(externalUserID string, service cons
 func (d *DBsql) GetSocialProfileByUserId(UserID int, service constants.Platform) (*models.SocialProfile, error) {
 	var socialProfile models.SocialProfile
 	query := `
-		SELECT id, user_id, platform, profile_url, external_id
+		SELECT id, user_id, params, token, platform, profile_url, external_id
 		FROM social_profiles
 		WHERE user_id = ? and platform = ?
 	`
@@ -104,13 +104,15 @@ func (d *DBsql) GetSocialProfileByUserId(UserID int, service constants.Platform)
 	err := d.DB.QueryRow(query, UserID, service).Scan(
 		&socialProfile.ID,
 		&socialProfile.UserID,
+		&socialProfile.Params,
+		&socialProfile.Token,
 		&socialProfile.Platform,
 		&socialProfile.ProfileURL,
 		&socialProfile.ExternalID,
 	)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, nil
+			return nil, err
 		}
 		return &socialProfile, fmt.Errorf("error fetching profile: %v", err)
 	}

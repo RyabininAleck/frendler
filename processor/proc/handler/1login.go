@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"golang.org/x/oauth2"
 
 	"frendler/processor/config"
 	googleModels "frendler/processor/models/google"
@@ -18,6 +19,6 @@ func (h *HandlerImpl) LoginByGoogle(c echo.Context) error {
 
 	cfg := config.GoogleOauth
 	cfg.RedirectURL = req.RedirectURL
-	url := cfg.AuthCodeURL(config.OauthStateString)
+	url := cfg.AuthCodeURL(config.OauthStateString, oauth2.AccessTypeOffline)
 	return c.JSON(http.StatusOK, map[string]string{"redirectUrl": url})
 }

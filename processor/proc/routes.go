@@ -22,7 +22,7 @@ func (p *Processor) RegisterHandlers(api *echo.Group) {
 	userApi.GET("/settings", p.Handler.GetSettings)
 	userApi.GET("/contactStats", p.Handler.GetContactStats)
 
-	userUpdate := api.Group("/update")
+	userUpdate := userApi.Group("/update")
 	userUpdate.GET("/google", p.Handler.GoogleContactUpdate)
 	////todo проверить
 	//get := api.Group("/:id")

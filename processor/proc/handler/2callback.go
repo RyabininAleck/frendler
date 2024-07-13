@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"golang.org/x/oauth2"
 
 	"frendler/common/constants"
 	"frendler/processor/config"
@@ -34,6 +35,15 @@ import (
 //	return c.NoContent(http.StatusOK)
 //}
 
+type QueryParams struct {
+	Authuser string `json:"authuser"`
+	Code     string `json:"code"`
+	Prompt   string `json:"prompt"`
+	Scope    string `json:"scope"`
+	State    string `json:"state"`
+	Token    string `json:"token"`
+}
+
 func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 	state := c.QueryParam("state")
 	if state != config.OauthStateString {
@@ -44,6 +54,7 @@ func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 	code := c.QueryParam("code")
 	token, err := config.GoogleOauth.Exchange(c.Request().Context(), code)
 	if err != nil {
+		//todo сделать редирект на страинцу плагина
 		return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to exchange token: %s", err.Error()))
 	}
 
@@ -62,6 +73,7 @@ func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 	var userId int64
 
 	if user != nil {
+		userId = user.UserID
 		err := h.DB.UpdateUserLogin(user.UserID)
 		if err != nil {
 			return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to updete user info: %s", err.Error()))
@@ -87,14 +99,18 @@ func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 			return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to create user: %s", err.Error()))
 		}
 
-		jsonData, _ := json.Marshal(c.QueryParams())
+		jsonData, _ := getJsonQueryParams(c)
+		//todo error
+
+		stringTokenOauth2, _ := getStringToken(token)
 
 		_, err = h.DB.CreateSocialProfile(&models.SocialProfile{
 			UserID:     userId,
 			Platform:   constants.PlatformGoogle,
 			ExternalID: userGoogleInfo.ID,
 			ProfileURL: userGoogleInfo.Email,
-			Params:     string(jsonData),
+			Params:     jsonData,
+			Token:      stringTokenOauth2,
 		})
 		if err != nil {
 			return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to create social profile: %s", err.Error()))
@@ -114,6 +130,31 @@ func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 		"sessionToken": sessionToken,
 		"userId":       strconv.FormatInt(userId, 10),
 	})
+}
+
+func getStringToken(token *oauth2.Token) (string, error) {
+	byteToken, err := json.Marshal(token)
+	if err != nil {
+		return "", fmt.Errorf("Failed to marshal token: %s", err.Error())
+	}
+	return string(byteToken), nil
+}
+func getJsonQueryParams(c echo.Context) (string, error) {
+	qp := QueryParams{
+		Authuser: c.QueryParam("authuser"),
+		Code:     c.QueryParam("code"),
+		Prompt:   c.QueryParam("prompt"),
+		Scope:    c.QueryParam("scope"),
+		State:    c.QueryParam("state"),
+		Token:    "",
+	}
+
+	jsonData, err := json.Marshal(qp)
+	if err != nil {
+		return "", err
+	}
+
+	return string(jsonData), nil
 }
 
 func getUserInfo(client *http.Client) (*googleModels.User, error) {
