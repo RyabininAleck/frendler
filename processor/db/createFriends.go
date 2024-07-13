@@ -58,38 +58,6 @@ func (d *DBsql) CreateFriend(userId int, platform constants.Platform, Friend mod
 	return friendID, nil
 }
 
-// --
-//func (d *DBsql) CreateAddresses(friendID int64, addresses []models.Address) (int64, error) {
-//	// Ваш код для создания адресов
-//	return nil
-//}
-//
-//func (d *DBsql) CreateEmails(friendID int64, emails []models.Email) (int64, error) {
-//	// Ваш код для создания электронных адресов
-//	return nil
-//}
-//
-//func (d *DBsql) CreatePhoneNumbers(friendID int64, phoneNumbers []models.PhoneNumber) (int64, error) {
-//	// Ваш код для создания номеров телефонов
-//	return nil
-//}
-//
-//func (d *DBsql) CreateNotes(friendID int64, notes []models.Note) (int64, error) {
-//	// Ваш код для создания заметок
-//	return nil
-//}
-//
-//func (d *DBsql) CreateURLs(friendID int64, urls []models.URL) (int64, error) {
-//	// Ваш код для создания URL
-//	return nil
-//}
-//
-//func (d *DBsql) CreateTags(friendID int64, tags []models.Tag) (int64, error) {
-//	// Ваш код для создания тегов
-//	return nil
-//}
-
-// CreateAddresses - метод для создания адресов
 func (d *DBsql) CreateAddresses(friendID int64, addresses []models.Address) ([]int64, error) {
 	var ids []int64
 	for _, address := range addresses {
@@ -112,7 +80,6 @@ func (d *DBsql) CreateAddresses(friendID int64, addresses []models.Address) ([]i
 	return ids, nil
 }
 
-// CreateEmails - метод для создания электронных адресов
 func (d *DBsql) CreateEmails(friendID int64, emails []models.Email) ([]int64, error) {
 	var ids []int64
 	for _, email := range emails {
@@ -158,7 +125,6 @@ func (d *DBsql) CreatePhoneNumbers(friendID int64, phoneNumbers []models.PhoneNu
 	return ids, nil
 }
 
-// CreateNotes - метод для создания заметок
 func (d *DBsql) CreateNotes(friendID int64, notes []models.Note) ([]int64, error) {
 	var ids []int64
 	for _, note := range notes {
@@ -181,7 +147,6 @@ func (d *DBsql) CreateNotes(friendID int64, notes []models.Note) ([]int64, error
 	return ids, nil
 }
 
-// CreateURLs - метод для создания URL
 func (d *DBsql) CreateURLs(friendID int64, urls []models.URL) ([]int64, error) {
 	var ids []int64
 	for _, url := range urls {
@@ -204,7 +169,6 @@ func (d *DBsql) CreateURLs(friendID int64, urls []models.URL) ([]int64, error) {
 	return ids, nil
 }
 
-// CreateTags - метод для создания тегов
 func (d *DBsql) CreateTags(friendID int64, tags []models.Tag) ([]int64, error) {
 	var ids []int64
 	for _, tag := range tags {

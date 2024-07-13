@@ -159,7 +159,7 @@ func getGoogleContacts(userId int, client *http.Client) ([]*models.Set, error) {
 		for _, url := range contact.URLs {
 			friendSet.URLs = append(friendSet.URLs, models.URL{
 				URL:            url.Value,
-				URLDescription: url.FormattedType, // todo внимательно проверить что тут все на своих местах
+				URLDescription: url.Type,
 				URLType:        url.Type,
 			})
 		}
