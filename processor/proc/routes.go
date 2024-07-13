@@ -24,6 +24,7 @@ func (p *Processor) RegisterHandlers(api *echo.Group) {
 
 	userUpdate := userApi.Group("/update")
 	userUpdate.GET("/google", p.Handler.GoogleContactUpdate)
+
 	////todo проверить
 	//get := api.Group("/:id")
 	//get.GET("/profile", p.Handler.GetProfile)   // +

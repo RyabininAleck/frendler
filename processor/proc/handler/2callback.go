@@ -139,6 +139,7 @@ func getStringToken(token *oauth2.Token) (string, error) {
 	}
 	return string(byteToken), nil
 }
+
 func getJsonQueryParams(c echo.Context) (string, error) {
 	qp := QueryParams{
 		Authuser: c.QueryParam("authuser"),
