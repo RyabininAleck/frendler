@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"frendler/common/constants"
 	"frendler/processor/models"
 )
 
@@ -59,35 +58,3 @@ func (d *DBsql) CreateSocialProfile(profile *models.SocialProfile) (int64, error
 }
 
 //todo добавить создание друга, создание друзей
-
-func (d *DBsql) CreateFriend(userId int, contact *models.Friend, platform constants.Platform) (int64, error) {
-	// todo доделать
-	query := `
-		INSERT INTO friends (ownerID, name, platform, birthdate, phone_number, avatar_url)
-		VALUES (?, ?, ?, ?, ?, ?)
-	`
-	res, err := d.DB.Exec(query, userId, contact.GivenName, platform, contact.Birthdate, contact.PhoneNumber, contact.AvatarURL)
-	if err != nil {
-		return 0, fmt.Errorf("error creating social profile: %v", err)
-	}
-
-	socialProfileID, err := res.LastInsertId()
-	if err != nil {
-		return 0, fmt.Errorf("error getting last insert ID for user: %v", err)
-	}
-
-	return socialProfileID, nil
-
-}
-
-func (d *DBsql) CreateFriends(userId int, contacts []*models.Friend, platform constants.Platform) ([]int64, error) {
-	socialProfileIDs := []int64{}
-	for _, contact := range contacts {
-		friendId, err := d.CreateFriend(userId, contact, platform)
-		if err != nil {
-			return socialProfileIDs, err
-		}
-		socialProfileIDs = append(socialProfileIDs, friendId)
-	}
-	return socialProfileIDs, nil
-}

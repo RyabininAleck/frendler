@@ -6,6 +6,16 @@ import (
 	"frendler/common/constants"
 )
 
+type Set struct {
+	Friend         Friend
+	Addresses      []Address
+	EmailAddresses []Email
+	PhoneNumbers   []PhoneNumber
+	Notes          []Note
+	URLs           []URL
+	Tags           []Tag
+}
+
 type User struct {
 	ID          int64            `json:"id"`
 	Username    string           `json:"username"`
@@ -95,6 +105,7 @@ type Note struct {
 	FriendID  int64     `json:"friend_id"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
+	EventTime time.Time `json:"event_time"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Category  string    `json:"category,omitempty"`

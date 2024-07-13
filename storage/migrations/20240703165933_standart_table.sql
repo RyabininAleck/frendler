@@ -50,7 +50,7 @@ CREATE TABLE friends (
                          family_name TEXT NOT NULL,
                          display_name TEXT NOT NULL,
                          birthdate DATE,
-                         Organizations TEXT,
+                         organizations TEXT,
                          platform TEXT CHECK(platform IN ('vk', 'telegram', 'contact', 'google')) NOT NULL,
                          avatar_url TEXT,
                          FOREIGN KEY (ownerID) REFERENCES users(id)
@@ -62,8 +62,8 @@ CREATE TABLE friend_phone_numbers (
                                       phone_number TEXT NOT NULL,
                                       is_primary BOOLEAN NOT NULL DEFAULT FALSE,
                                       number_type TEXT CHECK(number_type IN ('mobile', 'work', 'home', 'other')) NOT NULL,
-                                      FOREIGN KEY (friend_id) REFERENCES friends(id),
-                                      CONSTRAINT unique_primary_number UNIQUE (friend_id, is_primary)
+                                      FOREIGN KEY (friend_id) REFERENCES friends(id)
+                                      --CONSTRAINT unique_primary_number UNIQUE (friend_id, is_primary)
 );
 
 CREATE TABLE friend_emails (
@@ -101,6 +101,7 @@ CREATE TABLE friend_notes (
                               title TEXT,
                               category TEXT,
                               content TEXT,
+                              event_time TIMESTAMP,
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               FOREIGN KEY (friend_id) REFERENCES friends(id)

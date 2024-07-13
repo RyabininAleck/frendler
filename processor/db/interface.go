@@ -13,8 +13,8 @@ type DB interface {
 	CreateSocialProfile(profile *models.SocialProfile) (int64, error)
 	CreateUserAndSetting(user *models.User, set *models.Setting) (int64, int64, error)
 
-	CreateFriend(userId int, contact *models.Friend, platform constants.Platform) (int64, error)
-	CreateFriends(userId int, contact []*models.Friend, platform constants.Platform) ([]int64, error)
+	CreateFriendSet(userId int, contact *models.Set, platform constants.Platform) (int64, error)
+	CreateFriendSets(userId int, contact []*models.Set, platform constants.Platform) ([]int64, error)
 
 	UpdateUserLogin(id int64) error
 
