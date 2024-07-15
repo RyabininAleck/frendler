@@ -5,13 +5,13 @@ import (
 	"frendler/processor/config"
 	"frendler/processor/db"
 	"frendler/processor/proc/handler"
-	"frendler/processor/tasks"
+	"frendler/processor/scheduler"
 )
 
 type Processor struct {
-	config  config.Config
-	Handler handler.Handler
-	DB      db.DB
-	Adapter adapter.Adapter
-	Tasks   tasks.Task
+	config    config.Config
+	Handler   handler.Handler
+	DB        db.DB
+	Adapter   adapter.Adapter
+	Scheduler scheduler.Scheduler
 }

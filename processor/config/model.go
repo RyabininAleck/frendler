@@ -13,5 +13,5 @@ type DBConf struct {
 }
 
 type TaskConf struct {
-	Interval int `yaml:"Interval"` //ms
+	Interval int `yaml:"Interval"`
 }
