@@ -42,7 +42,7 @@ func (h *HandlerImpl) GetSettings(c echo.Context) error {
 func (h *HandlerImpl) GetContactStats(c echo.Context) error {
 	cookieId, err := c.Cookie("userId")
 	if err != nil {
-		log.Printf("Server failed: %v", err)
+		log.Printf("Server could not get the userid: %v", err)
 	}
 	stringId := cookieId.Value
 	id, err := strconv.Atoi(stringId)
