@@ -12,10 +12,8 @@ import (
 
 func main() {
 
-	// todo подтянуть конфиг
 	cfg := config.Get()
 
-	// todo Подключиться к БД, настроить
 	db := database.Init(cfg.DB)
 	storage.Migrations(db)
 
@@ -26,12 +24,10 @@ func main() {
 	// todo подключиться дататаски
 	tasks := dataTasks.Init(cfg.Task)
 
-	// todo обьединить в сервис
 	processor := proc.Init(cfg, db, hadler, adapter, tasks)
 
 	// todo запустить дататаски
 	processor.RunTasks()
-	// todo запустить сервер
 	err := processor.Run()
 	if err != nil {
 		processor.Stop()

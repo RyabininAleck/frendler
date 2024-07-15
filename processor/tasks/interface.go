@@ -1,7 +1,9 @@
 package tasks
 
+import "frendler/processor/proc/handler"
+
 type Task interface {
-	Init(cfg string)
-	//Run()
+	Init(string)
+	Run(int, handler.HandlerImpl)
 	//Stop()
 }

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -39,11 +40,19 @@ func (h *HandlerImpl) GetSettings(c echo.Context) error {
 }
 
 func (h *HandlerImpl) GetContactStats(c echo.Context) error {
-	//todo добавить обработку ошибок. при ошибке отвечать ошибка сервера
-	cookieId, _ := c.Cookie("userId")
+	cookieId, err := c.Cookie("userId")
+	if err != nil {
+		log.Printf("Server failed: %v", err)
+	}
 	stringId := cookieId.Value
-	id, _ := strconv.Atoi(stringId)
-	contactCount, conflictCount, _ := h.DB.GetContactStats(id)
+	id, err := strconv.Atoi(stringId)
+	if err != nil {
+		log.Printf("Failed to formatting param: %v", err)
+	}
+	contactCount, conflictCount, err := h.DB.GetContactStats(id)
+	if err != nil {
+		log.Printf("Failed to get contact stats: %v", err)
+	}
 
 	return c.JSON(http.StatusOK, echo.Map{"conflicts": conflictCount, "new_contacts": contactCount})
 }
