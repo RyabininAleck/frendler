@@ -1,8 +1,8 @@
 package tasks
 
 import (
-	"fmt"
 	"frendler/processor/proc/handler"
+	"log"
 	"time"
 )
 
@@ -14,15 +14,13 @@ type TaskImpl struct {
 func (t TaskImpl) Init(name string) {
 }
 
-func (t *TaskImpl) Run(userID int, db handler.HandlerImpl) {
+func (t *TaskImpl) Run(db *handler.HandlerImpl) {
 	go func() {
 		for {
-			contactCount, conflictCount, err := db.DB.GetContactStats(userID)
-			if err != nil {
-				fmt.Printf("Error getting contact stats: %v\n", err)
-			} else {
-				fmt.Printf("Contact count: %d, Conflict count: %d\n", contactCount, conflictCount)
+			if err := db.GetContactStats; err != nil {
+				log.Fatalf("Failed to update friends: %v", err)
 			}
+
 			time.Sleep(time.Duration(t.interval) * time.Second)
 		}
 	}()
