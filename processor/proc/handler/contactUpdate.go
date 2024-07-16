@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -142,9 +143,9 @@ func getGoogleContacts(userId int, client *http.Client) ([]*models.Set, error) {
 		}
 
 		for _, event := range contact.Events {
-			eventTime, err := event.Date.DateToTimeStamp() //todo добавить логирование ошибки
+			eventTime, err := event.Date.DateToTimeStamp()
 			if err != nil {
-				continue
+				log.Fatalf("Error converting event date to timestamp: %v", err)
 			}
 
 			friendSet.Notes = append(friendSet.Notes, models.Note{

@@ -1,17 +1,19 @@
 package tasks
 
 import (
+	"context"
 	"log"
 	"time"
 
 	"frendler/processor/db"
 )
 
-func CreateContactUpdateTask(db db.DB, interval time.Duration) *ContactUpdateTask {
-	return &ContactUpdateTask{interval, db}
+func CreateContactUpdateTask(ctx context.Context, interval time.Duration, db db.DB) *ContactUpdateTask {
+	return &ContactUpdateTask{ctx, interval, db}
 }
 
 type ContactUpdateTask struct {
+	ctx      context.Context
 	interval time.Duration
 	db       db.DB
 }
@@ -25,8 +27,9 @@ func (t *ContactUpdateTask) Run() {
 			select {
 			case <-ticker.C:
 				t.execute()
-
-				//todo  надо придумать как останавливать. Можно сделать канал для закрытия, можно сделать через контекст. Лучше через контекст. Остановка должна сопровождаться завершением всех работающих транзакций тасок и завершением горутин после их окончания
+			case <-t.ctx.Done():
+				log.Printf("Stopping Contact update task")
+				return
 			}
 		}
 	}()
@@ -34,5 +37,12 @@ func (t *ContactUpdateTask) Run() {
 
 func (t *ContactUpdateTask) execute() {
 	log.Println("Contact Update Task")
+	userID := 1
 
+	contact, conflictContact, err := t.db.GetContactStats(userID)
+	if err != nil {
+		log.Fatalf("Failed to updated contact: %v", err)
+	} else {
+		log.Printf("Contact count: %d, Conflict count: %d\n", contact, conflictContact)
+	}
 }

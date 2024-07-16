@@ -35,3 +35,9 @@ const (
 	ThemeDark   Theme = "dark"
 	ThemeSystem Theme = "system"
 )
+
+type Category string
+
+const (
+	CategoryEvent Category = "event"
+)

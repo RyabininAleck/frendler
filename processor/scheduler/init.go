@@ -1,6 +1,7 @@
 package scheduler
 
 import (
+	"context"
 	"time"
 
 	"frendler/processor/config"
@@ -8,10 +9,10 @@ import (
 	"frendler/processor/scheduler/tasks"
 )
 
-func Init(cfg config.TaskConf, db db.DB) *SchedulerImpl {
+func Init(ctx context.Context, cfg config.TaskConf, db db.DB) *SchedulerImpl {
 	var ts []tasks.Task
 
-	contactUpdateTask := tasks.CreateContactUpdateTask(db, time.Duration(cfg.Interval)*time.Second)
+	contactUpdateTask := tasks.CreateContactUpdateTask(ctx, time.Duration(cfg.Interval)*time.Second, db)
 	ts = append(ts, contactUpdateTask)
 
 	return &SchedulerImpl{
