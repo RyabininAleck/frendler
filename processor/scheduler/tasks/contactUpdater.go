@@ -41,7 +41,7 @@ func (t *ContactUpdateTask) Stop() {
 }
 
 func (t *ContactUpdateTask) execute() {
-	userID := 1
+
 	//todo  []socialProfiles(userId, platform,  token) := получить список социальных профилей у которых поле last_contact_updated_at имеет дату раньше чем NOW()-config.platform.updateInterval (с момента последнего обновления прошло больше чем config.platform.updateInterval)    (userId, )
 	// for profile(userId, platform) := range  []socialProfiles(userId, platform){
 	// пока platform  только google
@@ -52,10 +52,12 @@ func (t *ContactUpdateTask) execute() {
 	// getGoogleContacts(userId, client) из handler/contactUpdate
 	// вот тут надо вставить в базу данных новые контакты или обновить те, которые были изменены
 	// }
-	contact, conflictContact, err := t.db.GetContactStats(userID)
-	if err != nil {
-		log.Fatalf("Failed to updated contact: %v", err)
-	} else {
-		log.Printf("Contact count: %d, Conflict count: %d\n", contact, conflictContact)
-	}
+
+	//userID := 1
+	//contact, conflictContact, err := t.db.GetContactStats(userID)
+	//if err != nil {
+	//	log.Fatalf("Failed to updated contact: %v", err)
+	//} else {
+	//	log.Printf("Contact count: %d, Conflict count: %d\n", contact, conflictContact)
+	//}
 }
