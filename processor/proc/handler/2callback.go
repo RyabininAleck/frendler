@@ -99,10 +99,15 @@ func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 			return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to create user: %s", err.Error()))
 		}
 
-		jsonData, _ := getJsonQueryParams(c)
-		//todo error
+		jsonData, err := getJsonQueryParams(c)
+		if err != nil {
+			log.Printf("Failed to get JSON params: %v", err)
+		}
 
-		stringTokenOauth2, _ := getStringToken(token)
+		stringTokenOauth2, err := getStringToken(token)
+		if err != nil {
+			log.Printf("Failed to get string token: %v", err)
+		}
 
 		_, err = h.DB.CreateSocialProfile(&models.SocialProfile{
 			UserID:     userId,

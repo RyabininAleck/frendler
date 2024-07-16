@@ -6,7 +6,7 @@ import (
 )
 
 func (p *Processor) RunTasks() {
-
+	p.Scheduler.StartDataTasks()
 }
 
 func (p *Processor) Run() error {
