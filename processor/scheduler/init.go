@@ -9,12 +9,14 @@ import (
 	"frendler/processor/scheduler/tasks"
 )
 
-func Init(ctx context.Context, cfg config.TaskConf, db db.DB) *SchedulerImpl {
+func Init(cfg config.TaskConf, db db.DB) *SchedulerImpl {
 	var ts []tasks.Task
 
-	contactUpdateTask := tasks.CreateContactUpdateTask(ctx, time.Duration(cfg.Interval)*time.Second, db)
+	ctx, cancel := context.WithCancel(context.Background())
+	contactUpdateTask := tasks.CreateContactUpdateTask(ctx, cancel, time.Duration(cfg.Interval)*time.Second, db)
 	ts = append(ts, contactUpdateTask)
 
+	//todo тут добавляются таски, по аналогии contactUpdateTask
 	return &SchedulerImpl{
 		tasks: ts,
 	}

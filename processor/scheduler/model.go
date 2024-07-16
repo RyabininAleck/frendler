@@ -13,3 +13,9 @@ func (t *SchedulerImpl) StartDataTasks() {
 		task.Run()
 	}
 }
+
+func (t *SchedulerImpl) StopDataTasks() {
+	for _, task := range t.tasks {
+		task.Stop()
+	}
+}
