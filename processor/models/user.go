@@ -55,65 +55,35 @@ type Setting struct {
 	UpdatedAt  time.Time       `json:"updated_at"`
 }
 
-type Friend struct {
-	ID            int64      `json:"id"`
-	OwnerID       int64      `json:"owner_id"`
-	GivenName     string     `json:"given_name"`
-	FamilyName    string     `json:"family_name"`
-	DisplayName   string     `json:"display_name"`
-	Birthdate     *time.Time `json:"birthdate,omitempty"`
-	Organizations string     `json:"organizations,omitempty"`
-	PhoneNumber   string     `json:"phone_number,omitempty"`
-	AvatarURL     string     `json:"avatar_url,omitempty"`
-}
+func RemoveDuplicates(newSets, OldSets []*Set) []*Set {
 
-type PhoneNumber struct {
-	ID          int    `json:"id"`
-	FriendID    int    `json:"friend_id"`
-	PhoneNumber string `json:"phone_number"`
-	IsPrimary   bool   `json:"is_primary"`
-	NumberType  string `json:"number_type"`
-}
+	oldContactsPhoneMap := make(map[string]string)
+	for _, oldContact := range OldSets {
+		for _, phone := range oldContact.PhoneNumbers {
+			oldContactsPhoneMap[phone.PhoneNumber] = oldContact.Friend.DisplayName
+		}
+	}
 
-type Email struct {
-	ID        int    `json:"id"`
-	FriendID  int    `json:"friend_id"`
-	Email     string `json:"email"`
-	EmailType string `json:"email_type"`
-}
+	type s struct {
+		displayName string
+		index       int
+	}
+	newContactsPhoneMap := make(map[string]s)
+	for i, newContact := range newSets {
+		for _, phone := range newContact.PhoneNumbers {
+			newContactsPhoneMap[phone.PhoneNumber] = s{newContact.Friend.DisplayName, i}
+		}
+	}
 
-type URL struct {
-	ID             int    `json:"id"`
-	FriendID       int    `json:"friend_id"`
-	URL            string `json:"url"`
-	URLDescription string `json:"url_description"`
-	URLType        string `json:"url_type"`
-}
+	ApprovedSetIDs := make(map[int]struct{})
 
-type Address struct {
-	ID          int    `json:"id"`
-	FriendID    int    `json:"friend_id"`
-	Address     string `json:"address"`
-	IsPrimary   bool   `json:"is_primary"`
-	AddressType string `json:"address_type"`
-	Country     string `json:"country,omitempty"`
-	CountryCode string `json:"country_code,omitempty"`
-}
+	//todo если у контакта несколько нометор и есть дубль этого контакта, то оно всегда проходит. Это надо пофиксить
+	for newContactsPhone, newContactStruct := range newContactsPhoneMap {
+		oldContactName, exist := oldContactsPhoneMap[newContactsPhone]
+		if !exist || oldContactName != newContactStruct.displayName {
+			ApprovedSetIDs[newContactStruct.index] = struct{}{}
+		}
+	}
 
-type Note struct {
-	NoteID    int64     `json:"note_id"`
-	FriendID  int64     `json:"friend_id"`
-	Title     string    `json:"title"`
-	Content   string    `json:"content"`
-	EventTime time.Time `json:"event_time"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Category  string    `json:"category,omitempty"`
-}
-
-type Tag struct {
-	ID       int64              `json:"id"`
-	FriendID int64              `json:"friend_id"`
-	Tag      string             `json:"tag"`
-	Platform constants.Platform `json:"platform,omitempty"`
+	return nil
 }

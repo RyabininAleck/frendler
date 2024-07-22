@@ -57,4 +57,26 @@ func (d *DBsql) CreateSocialProfile(profile *models.SocialProfile) (int64, error
 	return socialProfileID, nil
 }
 
-//todo добавить создание друга, создание друзей
+// todo добавить создание друга, создание друзей
+func (d *DBsql) CreateConflicts(userId int, conflicts []*models.Conflict) ([]int64, error) {
+	var ids []int64
+	query := `
+		INSERT INTO conflicts (user_id, left_friend_id, right_friend_id, is_active)
+		VALUES (?, ?, ?, ?)
+	`
+	for _, conflict := range conflicts {
+		res, err := d.DB.Exec(query, userId, conflict.OldFriendID, conflict.NewFriendID, conflict.IsActive)
+		if err != nil {
+			return nil, fmt.Errorf("error creating conflict: %v", err)
+		}
+
+		conflictID, err := res.LastInsertId()
+		if err != nil {
+			return nil, fmt.Errorf("error getting last insert ID for conflict: %v", err)
+		}
+
+		ids = append(ids, conflictID)
+	}
+
+	return ids, nil
+}

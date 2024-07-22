@@ -22,3 +22,14 @@ func (h *HandlerImpl) LoginByGoogle(c echo.Context) error {
 	url := cfg.AuthCodeURL(config.OauthStateString, oauth2.AccessTypeOffline)
 	return c.JSON(http.StatusOK, map[string]string{"redirectUrl": url})
 }
+
+func (h *HandlerImpl) LoginByVK(c echo.Context) error {
+	return c.NoContent(http.StatusNotImplemented)
+}
+func (h *HandlerImpl) LoginByTg(c echo.Context) error {
+	return c.NoContent(http.StatusNotImplemented)
+}
+
+func (h *HandlerImpl) LoginByWhatsUp(c echo.Context) error {
+	return c.NoContent(http.StatusNotImplemented)
+}

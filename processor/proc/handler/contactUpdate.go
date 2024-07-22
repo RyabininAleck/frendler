@@ -24,21 +24,11 @@ func (h *HandlerImpl) GoogleContactUpdate(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
 	}
 
-	//todo получить из базы данных code := sql:socialProfile(user_id).params.(json)[code]
-
-	//todo получить токен token, err := config.GoogleOauth.Exchange(c.Request().Context(), code)
-	//	if err != nil {
-	//		return c.String(http.StatusInternalServerError, fmt.Sprintf("Failed to exchange token: %s", err.Error()))
-	//	}
-
-	//todo получить контакты пользователя
-
-	//todo занести контакты пользователя в базу данных, в таблицу friends
-	// Получение авторизационного кода из базы данных
 	socialProfile, err := h.DB.GetSocialProfileByUserId(userId, constants.PlatformGoogle)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
 	}
+
 	token, err := GetGoogleToken(socialProfile)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": "Failed to get authorization code from database"})
@@ -46,23 +36,30 @@ func (h *HandlerImpl) GoogleContactUpdate(c echo.Context) error {
 
 	client := config.GoogleOauth.Client(c.Request().Context(), token)
 
-	//todo функция getGoogleContacts должна возвращать комплекты
-	// 1 комплект это контакт, его emails, numbers,Addresses, notes, tags( из Memberships),URLs
-
-	contacts, err := getGoogleContacts(userId, client)
+	newContacts, err := getGoogleContacts(userId, client)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": fmt.Sprintf("Failed to get contacts: %s", err.Error())})
 	}
 
-	//todo тут надо достать контакты из базы, обновить старые, добавить новые
+	oldContacts, err := h.DB.GetFriendSets(userId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": fmt.Sprintf("Failed to get contacts: %s", err.Error())})
+	}
 
-	// Сохранение контактов в базу данных
-	IDs, err := h.DB.CreateFriendSets(userId, contacts, constants.PlatformGoogle)
+	newContacts = models.RemoveDuplicates(newContacts, oldContacts)
+
+	IDs, err := h.DB.CreateFriendSets(userId, newContacts, constants.PlatformGoogle)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, echo.Map{"error": fmt.Sprintf("Failed to save contacts: %s", err.Error())})
 	}
 
-	return c.JSON(http.StatusOK, IDs)
+	conflicts := DetectFriendConflicts(userId, newContacts, oldContacts)
+	ConflictIDs, err := h.DB.CreateConflicts(userId, conflicts)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, echo.Map{"error": fmt.Sprintf("Failed to CreateConflicts: %s", err.Error())})
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{"userID": userId, "newFriendIDs": IDs, "ConflictIDs": ConflictIDs})
 }
 
 func GetGoogleToken(socialProfile *models.SocialProfile) (*oauth2.Token, error) {
@@ -177,4 +174,43 @@ func getGoogleContacts(userId int, client *http.Client) ([]*models.Set, error) {
 
 	return friendSets, nil
 
+}
+
+func DetectFriendConflicts(userId int, newContacts []*models.Set, oldContacts []*models.Set) []*models.Conflict {
+	var conflicts []*models.Conflict
+
+	type IdAndName struct { //todo naming
+		id   int64
+		name string
+	}
+
+	oldContactsPhoneMap := make(map[string]IdAndName)
+	for _, oldContact := range oldContacts {
+		for _, phone := range oldContact.PhoneNumbers {
+			oldContactsPhoneMap[phone.PhoneNumber] = IdAndName{id: oldContact.Friend.ID, name: oldContact.Friend.DisplayName}
+		}
+	}
+
+	newContactsPhoneMap := make(map[string]IdAndName)
+	for _, newContact := range newContacts {
+		for _, phone := range newContact.PhoneNumbers {
+			newContactsPhoneMap[phone.PhoneNumber] = IdAndName{id: newContact.Friend.ID, name: newContact.Friend.DisplayName}
+		}
+	}
+
+	for newContactsPhone, newContact := range newContactsPhoneMap {
+		oldContact, exist := oldContactsPhoneMap[newContactsPhone]
+		if exist && oldContact.name != newContact.name {
+			conflicts = append(conflicts, &models.Conflict{
+				UserID:      int64(userId),
+				OldFriendID: oldContact.id,
+				NewFriendID: newContact.id,
+				IsActive:    true,
+				CreatedAt:   time.Now(),
+				UpdatedAt:   time.Now(),
+			})
+		}
+	}
+
+	return conflicts
 }

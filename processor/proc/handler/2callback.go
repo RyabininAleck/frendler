@@ -17,33 +17,6 @@ import (
 	googleModels "frendler/processor/models/google"
 )
 
-//func handleGoogleCallback(c echo.Context) error {
-//	//todo делается проверка на успешный статус
-//	//todo проверка что пользователь такой есть
-//	//todo если пользователь есть в базе данных,
-//	//	//todo то обновить его update time
-//	//	//todo иначе,
-//	//		//todo запросить данные пользователя
-//	//		//todo создать пользователя
-//
-//	state := c.QueryParam("state")
-//	if state != config.OauthStateString {
-//		log.Println("invalid oauth state")
-//		return c.Redirect(http.StatusTemporaryRedirect, "/")
-//	}
-//
-//	return c.NoContent(http.StatusOK)
-//}
-
-type QueryParams struct {
-	Authuser string `json:"authuser"`
-	Code     string `json:"code"`
-	Prompt   string `json:"prompt"`
-	Scope    string `json:"scope"`
-	State    string `json:"state"`
-	Token    string `json:"token"`
-}
-
 func (h *HandlerImpl) HandleGoogleCallback(c echo.Context) error {
 	state := c.QueryParam("state")
 	if state != config.OauthStateString {
@@ -146,7 +119,14 @@ func getStringToken(token *oauth2.Token) (string, error) {
 }
 
 func getJsonQueryParams(c echo.Context) (string, error) {
-	qp := QueryParams{
+	qp := struct {
+		Authuser string `json:"authuser"`
+		Code     string `json:"code"`
+		Prompt   string `json:"prompt"`
+		Scope    string `json:"scope"`
+		State    string `json:"state"`
+		Token    string `json:"token"`
+	}{
 		Authuser: c.QueryParam("authuser"),
 		Code:     c.QueryParam("code"),
 		Prompt:   c.QueryParam("prompt"),

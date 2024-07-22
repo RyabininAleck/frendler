@@ -8,7 +8,6 @@ import (
 	"frendler/processor/models"
 )
 
-// GetSetting возвращает настройки пользователя по id
 func (d *DBsql) GetSetting(userID int) (*models.Setting, error) {
 	var setting models.Setting
 
@@ -29,7 +28,6 @@ func (d *DBsql) GetSetting(userID int) (*models.Setting, error) {
 	return &setting, nil
 }
 
-// GetSetting возвращает параметры пользователя по id
 func (d *DBsql) GetUserById(userID int) (*models.User, error) {
 	var user models.User
 	query := `
@@ -65,7 +63,6 @@ func (d *DBsql) GetUserById(userID int) (*models.User, error) {
 
 }
 
-// GetUserByExternalId возвращает параметры пользователя по внешнему id. Ищет externalUserID в SocialProfile
 func (d *DBsql) GetSocialProfileByExternalId(externalUserID string, service constants.Platform) (*models.SocialProfile, error) {
 	var socialProfile models.SocialProfile
 	query := `
@@ -92,7 +89,6 @@ func (d *DBsql) GetSocialProfileByExternalId(externalUserID string, service cons
 
 }
 
-// GetUserByExternalId возвращает параметры пользователя по внешнему id. Ищет externalUserID в SocialProfile
 func (d *DBsql) GetSocialProfileByUserId(UserID int, service constants.Platform) (*models.SocialProfile, error) {
 	var socialProfile models.SocialProfile
 	query := `
@@ -121,7 +117,6 @@ func (d *DBsql) GetSocialProfileByUserId(UserID int, service constants.Platform)
 
 }
 
-// GetContactStats возвращает количество общее количество контактов и количество неразрешенных конфликтов
 func (d *DBsql) GetContactStats(userID int) (int64, int64, error) {
 	var contactCount, conflictCount int64
 
