@@ -16,6 +16,7 @@ type Handler interface {
 
 	GetContactStats(c echo.Context) error
 
+	GetQRCode(c echo.Context) error
 	//
 	//CreateUserByNumber(c echo.Context) error
 	//CreateUserByVk(c echo.Context) error

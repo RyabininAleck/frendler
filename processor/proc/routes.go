@@ -21,6 +21,7 @@ func (p *Processor) RegisterHandlers(api *echo.Group) {
 
 	userApi.GET("/settings", p.Handler.GetSettings)
 	userApi.GET("/contactStats", p.Handler.GetContactStats)
+	userApi.GET("/qr", p.Handler.GetQRCode)
 
 	userUpdate := userApi.Group("/update")
 	userUpdate.GET("/google", p.Handler.GoogleContactUpdate)
