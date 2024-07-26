@@ -9,7 +9,7 @@ import (
 )
 
 type Processor struct {
-	config    config.Config
+	config    *config.Config
 	Handler   handler.Handler
 	DB        db.DB
 	Adapter   adapter.Adapter

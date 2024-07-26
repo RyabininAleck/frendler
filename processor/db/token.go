@@ -14,7 +14,7 @@ func (d *DBsql) CheckToken(id string, sessionToken string) *models.Token {
 		return nil
 	}
 
-	//todo  Проверяем, что токен не протух
+	//todo  Проверить, что токен не протух
 	return &token
 }
 

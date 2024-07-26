@@ -1,0 +1,24 @@
+{
+  "adapter": {},
+  "db": {
+    "path": "C:\\Users\\Lenovo\\GolandProjects\\frendler\\storage\\foo.dbo"
+  },
+  "task": {
+    "interval": 10
+  },
+  "logger": {
+    "log_level": "info",
+    "log_format": "pretty"
+  },
+  "googleOAuth2": {
+    "redirect_url": "http://localhost:8080/api/v1/callback/google",
+    "client_id": "554692719373-vv40si5k7elfa9p61vm26kbeouno9cfv.apps.googleusercontent.com",
+    "client_secret": "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",
+    "scopes": [
+      "https://www.googleapis.com/auth/contacts.readonly",
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ],
+    "oauth_state_string": "randomstatestring"
+  }
+}

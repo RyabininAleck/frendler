@@ -8,7 +8,7 @@ import (
 	"frendler/processor/scheduler"
 )
 
-func Init(config config.Config, DB db.DB, Handler handler.Handler, Adapter adapter.Adapter, Tasks scheduler.Scheduler) Processor {
+func Init(config *config.Config, DB db.DB, Handler handler.Handler, Adapter adapter.Adapter, Tasks scheduler.Scheduler) Processor {
 	return Processor{
 		config:    config,
 		Handler:   Handler,
