@@ -9,6 +9,7 @@ import (
 func (p *Processor) RegisterHandlers(api *echo.Group) {
 
 	api.GET("/hello", handler.HelloHandler)
+	api.GET("/hellohello", handler.HelloHandler)
 
 	createUserApi := api.Group("/login")
 	createUserApi.POST("/byGoogle", p.Handler.LoginByGoogle)
